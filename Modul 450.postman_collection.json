@@ -1,0 +1,389 @@
+{
+	"info": {
+		"_postman_id": "8c4d4381-835c-4aed-ae8e-fff35fc491b3",
+		"name": "Modul 450",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31175893"
+	},
+	"item": [
+		{
+			"name": "/trips",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Content-Type header is application/json\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Validate the structure of the response JSON\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('array');",
+							"    responseData.forEach(trip => {",
+							"        pm.expect(trip).to.be.an('object');",
+							"        pm.expect(trip.id).to.exist.and.to.be.a('number');",
+							"        pm.expect(trip.title).to.exist.and.to.be.a('string');",
+							"        pm.expect(trip.description).to.exist.and.to.be.a('string');",
+							"        pm.expect(trip.startTrip).to.exist.and.to.be.an('array');",
+							"        pm.expect(trip.endTrip).to.exist.and.to.be.an('array');",
+							"        pm.expect(trip.meetings).to.exist.and.to.be.an('array');",
+							"        trip.meetings.forEach(meeting => {",
+							"            pm.expect(meeting).to.be.an('object');",
+							"            pm.expect(meeting.id).to.exist.and.to.be.a('number');",
+							"            pm.expect(meeting.title).to.exist.and.to.be.a('string');",
+							"            pm.expect(meeting.description).to.exist.and.to.be.a('string');",
+							"        });",
+							"    });",
+							"});",
+							"",
+							"",
+							"pm.test(\"StartTrip and endTrip arrays are present and contain valid elements\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('array');",
+							"    ",
+							"    responseData.forEach(trip => {",
+							"        pm.expect(trip.startTrip).to.be.an('array').that.is.not.empty;",
+							"        pm.expect(trip.endTrip).to.be.an('array').that.is.not.empty;",
+							"    });",
+							"});",
+							"",
+							"",
+							"pm.test(\"Meetings array and nested objects have non-empty titles and descriptions\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('array');",
+							"    ",
+							"    responseData.forEach(function(trip) {",
+							"        pm.expect(trip.meetings).to.be.an('array');",
+							"        ",
+							"        trip.meetings.forEach(function(meeting) {",
+							"            pm.expect(meeting).to.be.an('object');",
+							"            pm.expect(meeting.title).to.exist.and.to.have.lengthOf.at.least(1, \"Meeting title should not be empty\");",
+							"            pm.expect(meeting.description).to.exist.and.to.have.lengthOf.at.least(1, \"Meeting description should not be empty\");",
+							"        });",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3001/trips",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"trips"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/trips/{id}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Content-Type header is application/json\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Id field is present and is a non-negative integer\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.id).to.exist;",
+							"    pm.expect(responseData.id).to.be.a('number');",
+							"    pm.expect(responseData.id).to.satisfy((id) => id >= 0, \"Id must be a non-negative integer\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Title and description fields are non-empty strings\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData).to.be.an('object');",
+							"  pm.expect(responseData.title).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Title should not be empty\");",
+							"  pm.expect(responseData.description).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Description should not be empty\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"StartTrip and EndTrip arrays are present and contain non-negative integers\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.startTrip).to.be.an('array').and.to.have.length.above(0);",
+							"    responseData.startTrip.forEach(function (value) {",
+							"        pm.expect(value).to.be.a('number').and.to.be.at.least(0);",
+							"    });",
+							"    ",
+							"    pm.expect(responseData.endTrip).to.be.an('array').and.to.have.length.above(0);",
+							"    responseData.endTrip.forEach(function (value) {",
+							"        pm.expect(value).to.be.a('number').and.to.be.at.least(0);",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3001/trips/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"trips",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/trips/{id}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response is in JSON format\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response body is empty\", function () {",
+							"    const responseData = pm.response.json();",
+							"    pm.expect(responseData).to.be.an('object').that.is.empty;",
+							"});",
+							"",
+							"",
+							"pm.test(\"Content type header is application/json\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Verify that the trip with ID 1 has been successfully deleted\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"trip with ID 1 has been successfully deleted\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3001/trips/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"trips",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/trips",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 201\", function () {",
+							"    pm.expect(pm.response.code).to.equal(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Id field is a non-negative integer\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.id).to.be.a('number');",
+							"    pm.expect(responseData.id).to.be.at.least(0);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Title is a non-empty string\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData.title).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Title should not be empty\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"StartTrip and endTrip arrays contain valid coordinates\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.startTrip).to.be.an('array');",
+							"    responseData.startTrip.forEach((coord) => {",
+							"        pm.expect(coord).to.be.a('number');",
+							"    });",
+							"",
+							"    pm.expect(responseData.endTrip).to.be.an('array');",
+							"    responseData.endTrip.forEach((coord) => {",
+							"        pm.expect(coord).to.be.a('number');",
+							"    });",
+							"});",
+							"",
+							"",
+							"pm.test(\"Meetings array is present and contains expected number of elements\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData).to.be.an('object');",
+							"  pm.expect(responseData.meetings).to.exist.and.to.be.an('array');",
+							"  pm.expect(responseData.meetings).to.have.lengthOf(1);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"title\": \"BT01\",\r\n    \"description\": \"San Francisco World Trade Center on new Server/IOT/Client \",\r\n    \"startTrip\": [\r\n        2021,\r\n        2,\r\n        13,\r\n        0,\r\n        0\r\n    ],\r\n    \"endTrip\": [\r\n        2021,\r\n        2,\r\n        15,\r\n        16,\r\n        56\r\n    ],\r\n    \"meetings\": [\r\n        {\r\n            \"id\": 1,\r\n            \"title\": \"One Conference\",\r\n            \"description\": \"Key Note on One Conference\"\r\n        },\r\n        {\r\n            \"id\": 2,\r\n            \"title\": \"Zero Conference\",\r\n            \"description\": \"Workshop Zero on One Conference\"\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3001/trips",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"trips"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/trips/{id}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"  pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Content-Type header is application/json\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Id field is present and non-negative\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.have.property('id');",
+							"    pm.expect(responseData.id).to.be.a('number');",
+							"    pm.expect(responseData.id).to.be.at.least(0, \"Id should be non-negative\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Title and description must be non-empty strings\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData).to.be.an('object');",
+							"  pm.expect(responseData.title).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Title should not be empty\");",
+							"  pm.expect(responseData.description).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Description should not be empty\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"StartTrip and endTrip arrays are present and contain non-negative integers\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.startTrip).to.be.an('array').that.is.not.empty;",
+							"    pm.expect(responseData.endTrip).to.be.an('array').that.is.not.empty;",
+							"    ",
+							"    responseData.startTrip.forEach(function (trip) {",
+							"        pm.expect(trip).to.be.a('number');",
+							"        pm.expect(trip).to.be.at.least(0, \"Value should be non-negative\");",
+							"    });",
+							"",
+							"    responseData.endTrip.forEach(function (trip) {",
+							"        pm.expect(trip).to.be.a('number');",
+							"        pm.expect(trip).to.be.at.least(0, \"Value should be non-negative\");",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"meetings\": [\r\n        {\r\n            \"id\": 1,\r\n            \"title\": \"OneS Conference\",\r\n            \"description\": \"Key Note on One Conference\"\r\n        },\r\n        {\r\n            \"id\": 2,\r\n            \"title\": \"Zero Conference\",\r\n            \"description\": \"Workshop Zero on One Conference\"\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3001/trips/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"trips",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
